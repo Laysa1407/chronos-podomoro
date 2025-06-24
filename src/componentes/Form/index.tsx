@@ -1,11 +1,15 @@
 import { DefaultInput } from "../DefaultInput";
 import { Cycles } from "../Cycles/Index";
 import { Button } from "../Button";
-import { PlayCircleIcon } from "lucide-react";
+import { PlayCircleIcon, StopCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { TaskModel } from "../../Models/TaskModel";
 import { useContextTask } from "../../contexts/TaskContext/useTaskCOontext";
-import { getNextCycle, getNextCycleType } from "../../utils/utils";
+import {
+  formatSecondsInMinutes,
+  getNextCycle,
+  getNextCycleType,
+} from "../../utils/utils";
 
 export function Form() {
   const [taskName, setTaskName] = useState("");
@@ -40,8 +44,23 @@ export function Form() {
         activeTask: newTask,
         currentCycle: nextCycle,
         secondsRemaining, //Implementar
-        formattedSecondsRemaining: "00:00", //Implementar
+        formattedSecondsRemaining: formatSecondsInMinutes(secondsRemaining), //Implementar
         tasks: [...prev.tasks, newTask],
+      };
+    });
+  }
+
+  function handleInterruptTask(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
+
+    setState((prev) => {
+      return {
+        ...prev,
+        activeTask: null,
+        secondsRemaining: 0,
+        formattedSecondsRemaining: "00:00", //Implementar
       };
     });
   }
@@ -60,18 +79,40 @@ export function Form() {
           placeholder="Informe o período"
           value={taskName}
           onChange={(e) => setTaskName(e.target.value)}
+          disabled={!!state.activeTask}
         />
       </div>
       <div className="formRow">
         <p>Próximo intervalo é de 25min</p>
       </div>
 
-      <div className="formRow">
-        <Cycles />
-      </div>
+      {state.currentCycle > 0 && (
+        <div className="formRow">
+          <Cycles />
+        </div>
+      )}
 
       <div className="formRow">
-        <Button icon={<PlayCircleIcon />} color="green" />
+        {!state.activeTask ? (
+          <Button
+            title="Iniciar nova tarefa"
+            aria-label="Iniciar nova Tarefa"
+            icon={<PlayCircleIcon />}
+            color="green"
+            type="submit"
+            key="button_submit"
+          />
+        ) : (
+          <Button
+            onClick={(e) => handleInterruptTask(e)}
+            title="Interromper tarefa atual"
+            aria-label="Interromper tarefa atual"
+            icon={<StopCircleIcon />}
+            color="red"
+            type="button"
+            key="button_button"
+          />
+        )}
       </div>
     </form>
   );
