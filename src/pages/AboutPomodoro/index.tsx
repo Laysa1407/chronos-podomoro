@@ -1,9 +1,15 @@
+import { useEffect } from "react";
 import { Container } from "../../componentes/Container";
+import { CustomLink } from "../../componentes/CustomLink";
 import { GenericHtml } from "../../componentes/GenericHtml";
 import { Heading } from "../../componentes/Heading";
 import { MainTemplate } from "../../templates/MainTemplate";
 
 export function AboutPomodoro() {
+  useEffect(() => {
+    document.title = "Entenda a técnica Pomodoro- Chronos pomodoro";
+  }, []);
+
   return (
     <MainTemplate>
       <Container>
@@ -50,8 +56,8 @@ export function AboutPomodoro() {
           <p>
             Você pode configurar o tempo de foco, descanso curto e descanso
             longo do jeito que quiser! Basta acessar a{" "}
-            <a href="/settings">página de configurações</a> e ajustar os minutos
-            como preferir.
+            <CustomLink href="/settings">página de configurações</CustomLink> e
+            ajustar os minutos como preferir.
           </p>
 
           <h3>🔁 Ciclos organizados em sequência</h3>
@@ -96,9 +102,9 @@ export function AboutPomodoro() {
           <h3>📊 Histórico automático</h3>
           <p>
             Todas as suas tarefas e ciclos concluídos ficam salvos no{" "}
-            <a href="/history">histórico</a>, com status de completas ou
-            interrompidas. Assim, você consegue acompanhar sua evolução ao longo
-            do tempo.
+            <CustomLink href="/history">histórico</CustomLink>, com status de
+            completas ou interrompidas. Assim, você consegue acompanhar sua
+            evolução ao longo do tempo.
           </p>
 
           <h2>Por que usar o Chronos Pomodoro?</h2>
@@ -111,8 +117,8 @@ export function AboutPomodoro() {
 
           <p>
             <strong>Pronto pra focar?</strong> Bora lá{" "}
-            <a href="/">voltar para a página inicial</a> e iniciar seus
-            Pomodoros! 🍅🚀
+            <CustomLink href="/">voltar para a página inicial</CustomLink> e
+            iniciar seus Pomodoros! 🍅🚀
           </p>
 
           <p>

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
+import { CustomLink } from "../CustomLink";
 
 type Themes = "dark" | "light";
 
@@ -37,31 +38,31 @@ export function Menu() {
 
   return (
     <nav className={styles.menu}>
-      <a
-        href="#"
+      <CustomLink
+        href="/"
         className={styles.menuLink}
         aria-label="Ir para a Home"
         title="Ir para a Home"
       >
         <HouseIcon />
-      </a>
-      <a
-        href="#"
+      </CustomLink>
+      <CustomLink
+        href="/history/"
         className={styles.menuLink}
         aria-label="Ver histórico"
         title="Ver Histórico"
       >
         <HistoryIcon />
-      </a>
-      <a
-        href="#"
+      </CustomLink>
+      <CustomLink
+        href="/settings/"
         className={styles.menuLink}
         aria-label="Configurações"
         title="Configurações"
       >
         <SettingsIcon />
-      </a>
-      <a
+      </CustomLink>
+      <CustomLink
         href="#"
         className={styles.menuLink}
         aria-label="Mudar Tema"
@@ -69,7 +70,7 @@ export function Menu() {
         onClick={handleClickToggleTheme}
       >
         {nextTimeIcon[theme]}
-      </a>
+      </CustomLink>
     </nav>
   );
 }

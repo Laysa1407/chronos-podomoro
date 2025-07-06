@@ -2,29 +2,32 @@ import { DefaultInput } from "../DefaultInput";
 import { Cycles } from "../Cycles/Index";
 import { Button } from "../Button";
 import { PlayCircleIcon, StopCircleIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { TaskModel } from "../../Models/TaskModel";
 import { useContextTask } from "../../contexts/TaskContext/useTaskCOontext";
-import {
-  formatSecondsInMinutes,
-  getNextCycle,
-  getNextCycleType,
-} from "../../utils/utils";
+import { getNextCycle, getNextCycleType } from "../../utils/utils";
+import { TaskActionType } from "../../contexts/TaskContext/TaskActions";
+import { Tips } from "../Tipe";
+import { showFeedback } from "../../adapters/showFeedback";
 
 export function Form() {
   const [taskName, setTaskName] = useState("");
 
-  const { state, setState } = useContextTask();
+  const { state, dispatch } = useContextTask();
+  const lastTaskName = state.tasks[state.tasks.length - 1]?.name || "";
 
   const nextCycle = getNextCycle(state.currentCycle);
-  const nextCycleType = getNextCycleType(state.currentCycle);
+  const nextCycleType = getNextCycleType(nextCycle);
 
   function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!taskName.trim()) {
-      alert(" informe o nome da tarefa!");
+      showFeedback.warning(" informe o nome da tarefa!");
       return;
     }
+
+    console.log(state.config);
+    console.log(state.config[nextCycleType], "NEXT CICLE TIPE");
 
     const newTask: TaskModel = {
       id: Date.now().toString(),
@@ -36,38 +39,16 @@ export function Form() {
       type: nextCycleType,
     };
 
-    const secondsRemaining = newTask.duration * 60;
-
-    setState((prev) => {
-      return {
-        ...prev,
-        activeTask: newTask,
-        currentCycle: nextCycle,
-        secondsRemaining, //Implementar
-        formattedSecondsRemaining: formatSecondsInMinutes(secondsRemaining), //Implementar
-        tasks: [...prev.tasks, newTask],
-      };
-    });
+    dispatch({ type: TaskActionType.START_TASK, payload: newTask });
   }
 
   function handleInterruptTask(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     e.preventDefault();
-
-    setState((prev) => {
-      return {
-        ...prev,
-        activeTask: null,
-        secondsRemaining: 0,
-        formattedSecondsRemaining: "00:00", //Implementar
-      };
-    });
+    showFeedback.warn("Tarefa interrompida!");
+    dispatch({ type: TaskActionType.INTERRUPT_TASK });
   }
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
 
   return (
     <form onSubmit={handleCreateNewTask} className="form" action={""}>
@@ -76,14 +57,15 @@ export function Form() {
           id="meuInput"
           type="text"
           labelText="task"
-          placeholder="Informe o período"
+          placeholder="Nome da tarefa"
           value={taskName}
           onChange={(e) => setTaskName(e.target.value)}
           disabled={!!state.activeTask}
+          defaultValue={lastTaskName}
         />
       </div>
       <div className="formRow">
-        <p>Próximo intervalo é de 25min</p>
+        <Tips />
       </div>
 
       {state.currentCycle > 0 && (
